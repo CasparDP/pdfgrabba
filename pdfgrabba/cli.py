@@ -10,7 +10,12 @@ from pdfgrabba.config import (
     load_config,
     write_project_config,
 )
-from pdfgrabba.manifest import build_manifest, print_summary, save_manifest
+from pdfgrabba.manifest import (
+    build_manifest,
+    print_summary,
+    reconcile_with_filesystem,
+    save_manifest,
+)
 
 
 def _prompt(question: str, default: str | None = None) -> str:
@@ -121,6 +126,10 @@ def main() -> None:
     else:
         print(f"Using existing manifest: {manifest_path}")
         print("(pass --rebuild-manifest to regenerate)")
+
+    reconciled = reconcile_with_filesystem(str(manifest_path), str(output_dir))
+    if reconciled:
+        print(f"Reconciled {reconciled} PDF(s) already in {output_dir} — marked as skipped")
 
     if args.manifest_only:
         return

@@ -36,33 +36,48 @@ Statuses `pending`, `failed`, and `skipped_manual` are retried on re-run; `downl
 
 CLI flags override both. Path resolution order for `bib_file` and `output_dir` in `cli.py`: CLI arg → config → interactive prompt. After prompting, the user is offered a one-click save to `./pdfgrabba.yaml` via `write_project_config`.
 
+## Install model
+
+pdfgrabba is meant to be installed once per machine via **pipx** so the
+`pdfgrabba` entry point lands on `$PATH` and can be invoked from any project
+directory. `poetry run pdfgrabba` only works *from inside this repo* because
+Poetry resolves against the local `pyproject.toml`. Use `poetry run` for the
+dev loop here; use `pipx install` (or `pipx install --editable`) for the
+real workflow.
+
 ## Common commands
 
 ```bash
-poetry install
+# Install the tool (one-time, machine-wide)
+pipx install ~/Github/pdfgrabba             # or --editable for dev
+pipx reinstall pdfgrabba                    # pull in code changes later
 
 # First-time machine setup
 mkdir -p ~/.config/pdfgrabba
 cp config_example.yaml ~/.config/pdfgrabba/config.yaml   # set email
 
-# In a project — first run prompts, optionally saves a project config
+# In a project — first run prompts, optionally saves ./pdfgrabba.yaml
 cd ~/Github/my-paper
-poetry run pdfgrabba
+pdfgrabba
 
 # Subsequent runs use ./pdfgrabba.yaml automatically
-poetry run pdfgrabba
+pdfgrabba
 
 # One-off override
-poetry run pdfgrabba paper/refs.bib -o /tmp/scratch/
+pdfgrabba paper/refs.bib -o /tmp/scratch/
 
 # Force regenerate the manifest from the .bib
-poetry run pdfgrabba --rebuild-manifest
+pdfgrabba --rebuild-manifest
 
 # Build manifest only (no Chrome)
-poetry run pdfgrabba --manifest-only
+pdfgrabba --manifest-only
 
 # Specific keys
-poetry run pdfgrabba --keys autor2003skill acemoglu2020robots
+pdfgrabba --keys autor2003skill acemoglu2020robots
+
+# Dev loop on the tool itself (must be inside this repo)
+poetry install
+poetry run pdfgrabba --help
 ```
 
 ## Key behaviors to preserve when editing

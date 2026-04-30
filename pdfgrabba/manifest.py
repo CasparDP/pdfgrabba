@@ -235,6 +235,31 @@ def load_manifest(path: str) -> list[dict]:
         return json.load(f)
 
 
+def reconcile_with_filesystem(manifest_path: str, output_dir: str) -> int:
+    """Mark retryable entries as 'skipped' if their target PDF already exists.
+
+    Useful when the output dir is synced across machines (e.g. Dropbox) but the
+    manifest is not — avoids re-downloading PDFs that landed via sync.
+    Returns the number of entries newly marked as skipped.
+    """
+    manifest = load_manifest(manifest_path)
+    out = Path(output_dir)
+    n = 0
+    for entry in manifest:
+        if entry.get("status") not in ("pending", "failed", "skipped_manual"):
+            continue
+        target = entry.get("target_filename")
+        if not target:
+            continue
+        if (out / target).exists():
+            entry["status"] = "skipped"
+            entry["notes"] = "File found in output dir (reconciled)"
+            n += 1
+    if n:
+        save_manifest(manifest, manifest_path)
+    return n
+
+
 def print_summary(manifest: list[dict]) -> None:
     statuses: dict[str, int] = {}
     for entry in manifest:

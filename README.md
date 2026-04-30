@@ -14,26 +14,38 @@ click "Download PDF" once per paper is the simplest thing that works.
 
 ## Install
 
-Requires Python 3.10+, Poetry, and Google Chrome installed at the standard
-macOS location (`/Applications/Google Chrome.app`). For paywalled journals
-you will also need to be on a network with subscription access (e.g. a
-university VPN).
+Requires Python 3.10+ and Google Chrome installed at the standard macOS
+location (`/Applications/Google Chrome.app`). For paywalled journals you
+also need a network with subscription access (e.g. a university VPN).
+
+The recommended install is [pipx](https://pipx.pypa.io/), which puts
+`pdfgrabba` on your `$PATH` in an isolated venv so you can invoke it from
+any project directory:
 
 ```bash
 git clone https://github.com/yourusername/pdfgrabba.git
-cd pdfgrabba
-poetry install
+pipx install ./pdfgrabba
 ```
+
+To pull in code changes later: `pipx reinstall pdfgrabba`. For active
+development on the tool itself, use `pipx install --editable ./pdfgrabba`
+so edits take effect without reinstalling.
 
 Set up the global config once per machine:
 
 ```bash
 mkdir -p ~/.config/pdfgrabba
-cp config_example.yaml ~/.config/pdfgrabba/config.yaml
+cp pdfgrabba/config_example.yaml ~/.config/pdfgrabba/config.yaml
 # edit it and set your email
 ```
 
 The email is used in the CrossRef User-Agent header (CrossRef etiquette).
+
+### Dev-loop alternative
+
+If you're hacking on pdfgrabba and don't want to reinstall, `poetry run
+pdfgrabba` works *from inside the pdfgrabba repo* (Poetry refuses to run
+from elsewhere because it's tied to the local `pyproject.toml`).
 
 ## Workflow
 
