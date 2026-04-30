@@ -1,0 +1,31 @@
+# pdfgrabba config — example showing all available fields.
+#
+# Two YAML files are loaded and merged (project values override global):
+#   1. ~/.config/pdfgrabba/config.yaml   — global, machine-wide identity
+#   2. ./pdfgrabba.yaml                  — per-project, lives next to the .bib
+#
+# Or pass --config PATH to use a specific file in place of the project layer.
+# CLI flags always win over config values.
+#
+# Typical setup:
+#   • Put `email` (and optionally `downloads_dir`) in the global config.
+#   • Put `bib_file` and `output_dir` in each project's pdfgrabba.yaml so that
+#     `cd ~/Github/my-paper && pdfgrabba` is enough.
+
+# ── Global (machine-wide) ──
+
+# Required. Sent to CrossRef in the User-Agent header. Standard etiquette.
+email: you@example.com
+
+# Optional. Where Chrome saves files before pdfgrabba renames and moves them.
+# Defaults to ~/Downloads.
+# downloads_dir: ~/Downloads
+
+
+# ── Project (per-repo) ──
+
+# Optional. Path to the BibTeX file. Relative to the directory you run from.
+# bib_file: paper/references.bib
+
+# Optional. Where renamed PDFs land.
+# output_dir: Literature/
