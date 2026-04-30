@@ -84,6 +84,7 @@ poetry run pdfgrabba --help
 
 - **Headed Chrome only.** `undetected-chromedriver` runs with `headless=False` and a persistent user profile at `~/.cache/pdfgrabba-profile/` so logins and Cloudflare cookies survive across sessions. Don't switch to headless.
 - **Manifest is state.** `save_manifest(...)` is called inside the per-paper loop after every status change. Crash-safety depends on it.
+- **Filesystem reconcile every run.** `reconcile_with_filesystem` runs in `cli.py` after the manifest is built/loaded and before `download.run`. It flips retryable entries (`pending`, `failed`, `skipped_manual`) to `skipped` if their `target_filename` already exists in `output_dir`. This handles the case where the output dir is synced (e.g. Dropbox) but the manifest is not — avoids re-downloading what's already on disk.
 - **Filename convention is load-bearing.** `Author_JournalAbbrev_Year.pdf`. Journal abbreviations live in `manifest.py:JOURNAL_ABBREVIATIONS`; extend that table rather than reformatting names elsewhere. CrossRef metadata overrides bib metadata for filename generation when available.
 - **Largest-PDF heuristic** picks the main paper when a supplement also downloads (`download.py:wait_for_new_pdf`). Don't replace with "first PDF wins".
 - **Email comes from config.** CrossRef User-Agent in `manifest.fetch_crossref_metadata` reads from `Config.email`. Don't hardcode.
